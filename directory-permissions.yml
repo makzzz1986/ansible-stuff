@@ -14,11 +14,24 @@
       file:
         path : "{{ string.split('/')|batch(item)|list|first|join('/') }}"
         state: directory
-        owner: user
-        group: user
+        owner: root
+        group: root
         mode : o+x
       with_items: "{{ counter }}"
 
 # Be carefull of permissions! 
 # It will try to chmod all tree of path, if you don't want to change subroot folder parmissions,
 # change range(2, ...) to range(3, ...)
+
+# vars will create a list of numbers:
+# counter:
+#    - 2
+#    - 3
+#    - 4
+#    - 5
+# And this {{ string.split('/')|batch(item)|list|first|join('/') }} will create strings like:
+# /tmp
+# /tmp/subtemp
+# /tmp/subtemp/anotherone/
+# /tmp/subtemp/anotherone/lastone
+# So, now you have permissions to surf to the last folder, and you can add task to change permissions and ownership of it
