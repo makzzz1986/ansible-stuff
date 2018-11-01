@@ -1,0 +1,24 @@
+# One day I stuck with recursive mode of file module
+# It will recursively change all permissions deeper from path,
+# but what if I created a subfolder in folder without o+x permission for user?
+# He can't use his folder if he doesn't have permissions on all top levels
+# I spend two days to solve this issue, so reverse recursive mode:
+
+    - name: Example of path
+        set_fact:
+          string: /tmp/subtemp/anotherone/lastone
+
+    - name: Ensure that all folder with right permissions
+      vars:
+        counter: "{{ range(2, string.split('/')|length + 1) |list }}"
+      file:
+        path : "{{ string.split('/')|batch(item)|list|first|join('/') }}"
+        state: directory
+        owner: user
+        group: user
+        mode : o+x
+      with_items: "{{ counter }}"
+
+# Be carefull of permissions! 
+# It will try to chmod all tree of path, if you don't want to change subroot folder parmissions,
+# change range(2, ...) to range(3, ...)
