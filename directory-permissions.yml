@@ -14,8 +14,6 @@
       file:
         path : "{{ string.split('/')|batch(item)|list|first|join('/') }}"
         state: directory
-        owner: root
-        group: root
         mode : o+x
       with_items: "{{ counter }}"
 
